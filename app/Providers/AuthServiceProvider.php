@@ -13,18 +13,19 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
-        'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
+    // COMENTO ESTA LÍNEA
+    // protected $policies = [
+    //     'App\Models\Model' => 'App\Policies\ModelPolicy',
+    // ];
 
     /**
      * Register any authentication / authorization services.
      */
     public function boot(): void
     {
+        // COMENTO ESTA LÍNEA
 
-
-        Passport::hashClientSecrets();
+        // Passport::hashClientSecrets();
        
     }
 }

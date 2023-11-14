@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Illuminate\Support\Facades\DB;
+
 
 
 
@@ -125,9 +127,14 @@ class UserController extends Controller
 
 
             if (Auth::attempt($credentials)) {
+
                 // $user = Auth::user();
+
                 $user = $request->user();
+
+
                 $token = $user->createToken('example')->accessToken;
+              
 
 
                 return response()->json([
@@ -144,6 +151,21 @@ class UserController extends Controller
             return response()->json(['error' => 'Error de autenticación.'], 401);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Se ha producido un error durante el inicio de sesión.'], 500);
+        }
+    }
+    //LOGOUT
+    public function logout()
+    {
+        $user = Auth::user();
+        var_dump($user);
+        exit(0);
+        if ($user) {
+
+            $user->tokens->each->revoke();
+
+            return response()->json('Cierre de sesión satisfactorio', 200);
+        } else {
+            return response()->json('Usuario no autentificado', 401);
         }
     }
 }
