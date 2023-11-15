@@ -23,7 +23,7 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:api');
 
-
+Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update')->middleware('auth:api');
 
 
 

@@ -134,7 +134,7 @@ class UserController extends Controller
 
 
                 $token = $user->createToken('example')->accessToken;
-              
+
 
 
                 return response()->json([
@@ -157,8 +157,8 @@ class UserController extends Controller
     public function logout()
     {
         $user = Auth::user();
-        var_dump($user);
-        exit(0);
+        // var_dump($user);
+        // exit(0);
         if ($user) {
 
             $user->tokens->each->revoke();
@@ -166,6 +166,55 @@ class UserController extends Controller
             return response()->json('Cierre de sesión satisfactorio', 200);
         } else {
             return response()->json('Usuario no autentificado', 401);
+        }
+    }
+    //UPDATE NAME
+
+    public function update(Request $request, $id)
+    {
+        try {
+
+            if (!auth()->check()) {
+                return response()->json(['error' => 'Usuario no autenticado.'], 401);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'nullable|unique:users,name,' . $id, // Excluye el usuario actual de la regla unique
+            ]);
+
+            $validator->setAttributeNames([
+                'name' => 'nombre',
+            ]);
+
+            $validator->setCustomMessages([
+                'unique' => 'Este :attribute ya está en uso.',
+            ]);
+
+            $validator->validate();
+
+            $user = User::find($id);
+
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no encontrado.'], 404);
+            }
+
+            // Asigna "anonymous" como valor por defecto si el campo "nickname" se deja vacío
+            if ($request->has('name')) {
+                $user->name = $request->input('name');
+            } else {
+                $user->name = 'anonymous' . time();
+            }
+            $user->save();
+
+            return response()->json($user, 200);
+        } catch (ValidationException $e) {
+            // Errores de validación
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            // Error genérico
+            // var_dump($e);
+            // exit(0);
+            return response()->json(['error' => 'Ocurrió un error al actualizar el usuario.'], 500);
         }
     }
 }
