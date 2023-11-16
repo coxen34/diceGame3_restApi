@@ -44,6 +44,8 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            //--------------PRUEBA PERO NO FUNCIONA------------------
+            // 'admin' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
             
         ],
     ];
@@ -69,7 +71,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-        //-----------↓↓comento ESTA LINEA↓↓------------
+        //-----------↓↓DEScomento ESTA LINEA↓↓------------
         // 'auth:api' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
         // ------------añado estas 4 lineas 
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
