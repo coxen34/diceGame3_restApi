@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::orderBy('name', 'asc')->get();
         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
 
         return response()->json([$usersWithSuccessPercentage], 200);
@@ -275,7 +275,7 @@ class UserController extends Controller
                 return response()->json(['error' => 'Usuario no encontrado.'], 404);
             }
 
-            // Asigna "anonymous" como valor por defecto si el campo "nickname" se deja vacío
+            // Asigna "anonymous" como valor por defecto si el campo "name" se deja vacío
             if ($request->has('name')) {
                 $user->name = $request->input('name');
             } else {

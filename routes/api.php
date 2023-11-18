@@ -26,13 +26,16 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middl
 
 
 Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update')->middleware('auth:api');
+
 //TIRAR DADOS
 Route::post('/players/{id}/games', [GameController::class, 'throwDice'])->name('games.throwDice')->middleware('auth:api');
+
 //elimina les tirades del jugador/a
 Route::delete('/players/{id}/games', [GameController::class,'delete'])->name('games.deletePlayerGames')->middleware('auth:api');
 
 // llistat de tots els jugadors/es del sistema amb el seu percentatge mitjà d’èxits
 Route::get('/players',[UserController::class,'index'])->name('users.index')->middleware('auth:api');
+
 //LISTADO JUGADAS X JUGADOR ID
 Route::get('/players/{id}/games', [GameController::class, 'getPlayerGames'])->name('games.getPlayerGames')->middleware('auth:api');
 
