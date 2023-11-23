@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Game;
+use Tests\Feature\GameTest;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +23,9 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call(RoleTableSeeder::class);
         $this->call(UserTableSeeder::class);
+        User::factory(2)->create();
         $this->call(GamesTableSeeder::class);
+        Game::factory(6)->create();
+        
     }
 }
