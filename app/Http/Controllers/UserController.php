@@ -204,6 +204,7 @@ class UserController extends Controller
 
 
             if (Auth::attempt($credentials)) {
+                
 
                 // $user = Auth::user();
 
@@ -227,9 +228,11 @@ class UserController extends Controller
         } catch (OAuthServerException $e) {
             return response()->json(['error' => 'Error de autenticación.'], 401);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Se ha producido un error durante el inicio de sesión.'], 500);
+            return response()->json(['error' => 'Se ha producido un error durante el inicio de sesión.' . $e->getMessage()], 500);
         }
     }
+    
+
     //LOGOUT
     public function logout()
     {
