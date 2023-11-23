@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 
 class UserTableSeeder extends Seeder
@@ -16,28 +17,65 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = Role::findByName('admin');
-        $role1 = Role::findByName('player');
+        // $role = Role::findByName('admin');
+        $role = Role::firstOrCreate(
+            ['name' => 'admin', 'guard_name' => 'web']
+        );
+        // $role1 = Role::findByName('player');
+        $role1 = Role::firstOrCreate(
+            ['name' => 'player', 'guard_name' => 'web']
+        );
 
-        User::create([
+        /*   User::create([
             'name' => 'admin',
             'email' => 'admin@mailto.com',
             'password' => Hash::make('admin'),
-        ])->assignRole($role);
-        User::create([
+        ])->assignRole($role); */
+        $user1 = User::firstOrCreate(
+            [
+                'name' => 'admin',
+                'email' => 'admin@mailto.com',
+                'email_verified_at' => now(), 'password' => Hash::make('admin'),
+                'remember_token' => Str::random(10),
+            ]
+        );
+        if (!$user1->hasRole('admin')) {
+            $user1->assignRole($role);
+        }
+        // $user1->assignRole($role);
+
+        $user2 = User::firstOrCreate([
             'name' => 'Carla',
             'email' => 'carla@mailto.com',
+            'email_verified_at' => now(),
             'password' => Hash::make('5**A__55446644'),
-        ])->assignRole($role1);
-        User::create([
+            'remember_token' => Str::random(10),
+        ]);
+        if (!$user2->hasRole('player')) {
+            $user2->assignRole($role1);
+        }
+        // $user2->assignRole($role1);
+        $user3 = User::firstOrCreate([
             'name' => 'Jana',
             'email' => 'jana@mailto.com',
+            'email_verified_at' => now(),
             'password' => Hash::make('5**A__55446644'),
-        ])->assignRole($role1);
-        User::create([
+            'remember_token' => Str::random(10),
+        ]);
+        if (!$user3->hasRole('player')) {
+            $user3->assignRole($role1);
+        }
+        //  $user3->assignRole($role1);
+        $user4 = User::create([
             'name' => 'player',
             'email' => 'player@mailto.com',
+            'email_verified_at' => now(),
             'password' => Hash::make('player'),
-        ])->assignRole($role1);
+            'remember_token' => Str::random(10),
+        ]);
+        if (!$user4->hasRole('player')) {
+            $user4->assignRole($role1);
+        }
+        //  $user4->assignRole($role1);
     }
 }
