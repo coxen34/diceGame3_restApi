@@ -19,8 +19,8 @@ class GameFactory extends Factory
     {
         
         return [
-            'dice1' => 6,
-            'dice2' => 7,
+            'dice1' => $this->faker->numberBetween(1, 6),
+            'dice2' => $this->faker->numberBetween(1, 6),
             'user_id' => User::factory(),
             'won' => $this->faker->boolean,
             'created_at' => now(),
