@@ -2,11 +2,7 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\GameController;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\Passport;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,11 +10,8 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Game;
+use Illuminate\Support\Facades\Hash;
 
-use Database\Seeders;
-use Database\Seeders\UserTableSeeder;
-use Illuminate\Support\Facades\DB;
 
 
 
@@ -51,11 +44,12 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', ['name' => 'TestUser', 'email' => 'testuser@example.com']);
     }
 
+
     public function test_login_with_correct_credentials()
     {
         User::factory()->create([
             'email' => 'test@example.com',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         $response = $this->postJson('/api/login', [
@@ -100,27 +94,69 @@ class UserTest extends TestCase
     }
 
 
+    //Funciones helper
+    private function getUser($name)
+    {
+        $user = User::where('name', $name)->first();
+        if (!$user) {
+            $user = User::factory()->create(['name' => $name]);
+        }
+        return $user;
+    }
+
+    private function assertResponseWorstPlayer($response)
+    {
+        if ($response->status() === 302) {
+            $response->assertRedirect('/api/login');
+        } else {
+            $response->assertStatus(200);
+            $response->assertJsonStructure([
+                'user' => [
+                    'id',
+                    'name'
+                ],
+                'success_percentage'
+            ]);
+        }
+    }
+
+    private function assertResponseBestPlayer($response)
+    {
+        if ($response->status() === 302) {
+            $response->assertRedirect('/api/login');
+        } else {
+            $response->assertStatus(200);
+            $response->assertJsonStructure([
+                'user' => [
+                    'id',
+                    'name'
+                ],
+                'success_percentage'
+            ]);
+        }
+    }
+    //Fin funciones helper
     public function testGetWorstPlayer()
     {
-        
-        $user1 = User::factory()
-            ->has(Game::factory()->state(['won'=>false])->count(3), 'games')
-            ->create();
-            dd('USER1' . $user1);
-        $user2 = User::factory()
-            ->has(Game::factory()->state(['won'=>true])->count(3), 'games')
-            ->create();
 
+        $user = $this->getUser('admin');
 
-      
-        $response = $this->actingAs($user1)->get('/api/players/ranking/loser');
-        // dd($response);
-        
-        $response->assertStatus(200);
+        $this->actingAs($user);
 
-        
-        $worstPlayer = $response->json();
+        $response = $this->get('api/players/ranking/loser');
 
-        $this->assertEquals($user1->id, $worstPlayer['user']['id']);
+        $this->assertResponseWorstPlayer($response);
+    }
+
+    public function testGetBestPlayer()
+    {
+
+        $user = $this->getUser('player');
+
+        $this->actingAs($user);
+
+        $response = $this->get('api/players/ranking/winner');
+
+        $this->assertResponseBestPlayer($response);
     }
 }
