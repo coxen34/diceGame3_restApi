@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\Models\User;
@@ -67,36 +67,36 @@ public function test_delete()
 
  $targetUser = $this->getUser('Carla');
 
- // Crea un juego para el usuario objetivo
+ 
  $game = Game::create(['user_id' => $targetUser->id,'dice1' => 1,
  'dice2' => 2]);
 
- // Crea un token de autenticación para el usuario
+
  $token = $user->createToken('TestToken')->accessToken;
 
- // Ejecuta la acción para eliminar los juegos del usuario
+
  $response = $this->withToken($token)->delete('/api/players/' . $targetUser->id . '/games');
 
- // Verifica la respuesta
+ 
  $this->assertResponseDelete($response);
 
- // Verifica que el juego se haya eliminado correctamente
+ 
  $this->assertDatabaseMissing('games', ['id' => $game->id]);
 }
 
 
 public function test_getPlayerGames()
 {
- // Encuentra un usuario existente en la base de datos de prueba
+ 
  $user = User::where('id', 1)->first();
 
- // Encuentra un juego existente para el usuario en la base de datos de prueba
+ 
  $game = Game::where('user_id', $user->id)->first();
 
- // Autentica al usuario
+ 
  $this->actingAs($user, 'api');
 
- // Ejecuta la acción para obtener los juegos del usuario
+ 
  $response = $this->get('/api/players/' . $user->id . '/games');
 
  // Verifica la respuesta
@@ -107,7 +107,7 @@ public function test_getPlayerGames()
            [
              'id' => $game->id,
              'user_id' => $user->id,
-             // Agrega aquí otros campos de juego que esperas en la respuesta
+            
            ],
        ],
    ]);
