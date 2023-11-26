@@ -8,38 +8,31 @@ use App\Http\Controllers\GameController;
 
 
 
-Route::post('/register', [UserController::class, 'register']);
+Route::post('/players', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
-Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:api');
 
+Route::middleware('auth:api')->group(function () {
 
-Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update')->middleware('auth:api');
+    Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
-//TIRAR DADOS
-Route::post('/players/{id}/games', [GameController::class, 'throwDice'])->name('games.throwDice')->middleware('auth:api');
+    Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update');
 
-//elimina les tirades del jugador/a
-Route::delete('/players/{id}/games', [GameController::class,'delete'])->name('games.deletePlayerGames')->middleware('auth:api');
+    //Tirada Daus
+    Route::post('/players/{id}/games', [GameController::class, 'throwDice'])->name('games.throwDice');
 
-// llistat de tots els jugadors/es del sistema amb el seu percentatge mitjà d’èxits
-Route::get('/players',[UserController::class,'index'])->name('users.index')->middleware('auth:api');
+    //Elimina les tirades del jugador/a
+    Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('games.deletePlayerGames');
 
-//LISTADO JUGADAS X JUGADOR ID
-Route::get('/players/{id}/games', [GameController::class, 'getPlayerGames'])->name('games.getPlayerGames')->middleware('auth:api');
+    // Llistat de tots els jugadors/es del sistema amb el seu percentatge mitjà d’èxits
+    Route::get('/players', [UserController::class, 'index'])->name('users.index');
 
-//rànquing mitjà de tots els jugadors/es del sistema.
-Route::get('/players/ranking', [UserController::class, 'getPlayersRanking'])->name('players.ranking')->middleware('auth:api');
+    //Llistat jugades X jugador ID
+    Route::get('/players/{id}/games', [GameController::class, 'getPlayerGames'])->name('games.getPlayerGames');
 
-Route::get('/players/ranking/loser', [UserController::class, 'getWorstPlayer'])->name('players.ranking/loser')->middleware('auth:api');
+    //Rànquing mitjà de tots els jugadors/es del sistema.
+    Route::get('/players/ranking', [UserController::class, 'getPlayersRanking'])->name('players.ranking');
 
-Route::get('/players/ranking/winner', [UserController::class, 'getBestPlayer'])->name('players.ranking/winner')->middleware('auth:api');
+    Route::get('/players/ranking/loser', [UserController::class, 'getWorstPlayer'])->name('players.ranking/loser');
 
-
-
-// Route::middleware('auth:api')->group(function () {
-    
-// });
-
-
-
-
+    Route::get('/players/ranking/winner', [UserController::class, 'getBestPlayer'])->name('players.ranking/winner');
+});
