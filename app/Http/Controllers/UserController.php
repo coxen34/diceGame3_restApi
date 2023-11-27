@@ -178,52 +178,111 @@ class UserController extends Controller
         }
     }
     //UPDATE NAME
+    /* public function update(Request $request, $id)
+{
+    try {
 
-    public function update(Request $request, $id)
-    {
-        try {
-
-            if (!auth()->check()) {
-                return response()->json(['error' => 'Usuario no autenticado.'], 401);
-            }
-
-            $validator = Validator::make($request->all(), [
-                'name' => 'nullable|unique:users,name,' . $id,
-            ]);
-
-            $validator->setAttributeNames([
-                'name' => 'nombre',
-            ]);
-
-            $validator->setCustomMessages([
-                'unique' => 'Este :attribute ya está en uso.',
-            ]);
-
-            $validator->validate();
-
-            $user = User::find($id);
-
-            if (!$user) {
-                return response()->json(['error' => 'Usuario no encontrado.'], 404);
-            }
-
-            if ($request->has('name')) {
-                $user->name = $request->input('name');
-            } else {
-                $user->name = 'anonymous' . time();
-            }
-            $user->save();
-
-            return response()->json($user, 200);
-        } catch (ValidationException $e) {
-
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            
-            return response()->json(['error' => 'Ocurrió un error al actualizar el usuario.'], 500);
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Usuario no autenticado.'], 401);
         }
-    }
 
+        if (auth()->user()->id != $id) {
+            return response()->json(['error' => 'No tienes permiso para actualizar este usuario.'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|unique:users,name,' . $id,
+        ]);
+
+        $validator->setAttributeNames([
+            'name' => 'nombre',
+        ]);
+
+        $validator->setCustomMessages([
+            'unique' => 'Este :attribute ya está en uso.',
+        ]);
+
+        $validator->validate();
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado.'], 404);
+        }
+
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        } else {
+            $user->name = 'anonymous' . time();
+        }
+        $user->save();
+
+        return response()->json($user, 200);
+
+    } catch (ValidationException $e) {
+
+        return response()->json(['errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        
+        return response()->json(['error' => 'Ocurrió un error al actualizar el usuario.'], 500);
+    }
+} */
+public function update(Request $request, $id)
+{
+    try {
+
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Usuario no autenticado.'], 401);
+        }
+
+        if (auth()->user()->id != $id) {
+            return response()->json(['error' => 'No tienes permiso para actualizar este usuario.'], 403);
+        }
+
+        $this->validateRequestUpdate($request, $id);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado.'], 404);
+        }
+
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        } else {
+            $user->name = 'anonymous' . time();
+        }
+        $user->save();
+
+        return response()->json($user, 200);
+
+    } catch (ValidationException $e) {
+
+        return response()->json(['errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        
+        return response()->json(['error' => 'Ocurrió un error al actualizar el usuario.'], 500);
+    }
+}
+
+private function validateRequestUpdate($request, $id)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'nullable|unique:users,name,' . $id,
+    ]);
+
+    $validator->setAttributeNames([
+        'name' => 'nombre',
+    ]);
+
+    $validator->setCustomMessages([
+        'unique' => 'Este :attribute ya está en uso.',
+    ]);
+
+    $validator->validate();
+}
+
+    
     /**
      * ----------BLOQUE MOSTRAR JUGADOR CON % DE EXITOS--------------
      */
