@@ -20,6 +20,9 @@ class GameController extends Controller
         if (!$targetUser) {
             return response()->json(['error' => 'Usuario no encontrado'], 404);
         }
+        if (auth()->user()->id != $id) {
+            return response()->json(['error' => 'No tienes permiso para tirar dados.'], 403);
+        }
 
         $dice1 = rand(1, 6);
         $dice2 = rand(1, 6);
@@ -58,6 +61,9 @@ class GameController extends Controller
 public function getPlayerGames($id)
 {
     $player = User::find($id);
+    if (auth()->user()->id != $id) {
+        return response()->json(['error' => 'No tienes permiso para ver a ese usuario.'], 403);
+    }
 
     if ($player) {
         $games = $player->games()->get();
