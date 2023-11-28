@@ -4,14 +4,9 @@ namespace Tests\Feature;
 
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Laravel\Passport\Passport;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
 
 
 
@@ -33,7 +28,7 @@ class UserTest extends TestCase
             'password' => 'TestPassword123!',
         ];
 
-        $response = $this->withToken($token)->post('/api/register', $data);
+        $response = $this->withToken($token)->post('/api/players', $data);
 
         $response->assertStatus(201)
             ->assertJson([
@@ -62,15 +57,37 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('token', $response->json());
     }
 
-    public function logout()
+
+    public function test_logout()
     {
-        $user = Auth::user();
-        if ($user) {
-            $user->tokens->each->revoke();
-            return response()->json(['message' => 'Cierre de sesión satisfactorio'], 200);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post('api/logout');
+
+        if ($response->status() === 302) {
+            $response->assertRedirect('/api/login');
         } else {
-            return response()->json(['message' => 'Usuario no autentificado'], 401);
+            $response->assertStatus(200);
+            $response->assertJson([
+                'message' => 'Cierre de sesión satisfactorio',
+            ]);
         }
+    }
+    public function test_index()
+    {
+        $user = User::factory()->create(['name' => 'Test User']);
+
+        $this->actingAs($user);
+
+        $user->assignRole('admin');
+
+        $response = $this->get('api/players/');
+
+        $token = $user->createToken('test-token')->accessToken;
+
+        $response = $this->withToken($token)->getJson('/api/players');
+
+        $response->assertStatus(200);
     }
 
     public function test_update()
@@ -79,6 +96,8 @@ class UserTest extends TestCase
 
         $token = $user->createToken('TestToken')->accessToken;
 
+        $user->assignRole('player');
+        
         $data = [
             'name' => 'UpdatedUser',
         ];
@@ -136,6 +155,7 @@ class UserTest extends TestCase
         }
     }
     //Fin funciones helper
+
     public function testGetWorstPlayer()
     {
 
