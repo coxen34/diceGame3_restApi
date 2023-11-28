@@ -274,30 +274,21 @@ class UserController extends Controller
      * ------------rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
      */
 
-    public function getPlayersRanking()
-    {
-        $players = User::all();
-
-        if ($players->isEmpty()) {
-            return response()->json(['error' => 'No hay jugadores en el sistema'], 404);
-        }
-
-        $totalSuccessPercentage = 0;
-        $totalGamesCount = 0;
-
-        foreach ($players as $player) {
-            $games = $player->games;
-
-            if ($games->isNotEmpty()) {
-                $totalSuccessPercentage += $this->calculateSuccessPercentageAll($games) * $games->count();
-                $totalGamesCount += $games->count();
-            }
-        }
-
-        $averageSuccessPercentage = $totalGamesCount > 0 ? $totalSuccessPercentage / $totalGamesCount : 0;
-
-        return response()->json(['% medio de éxitos de todos los jugadores' => $averageSuccessPercentage]);
-    }
+     public function getPlayersRanking()
+     {
+         
+         $users = User::all();
+         if ($users->isEmpty()) {
+             return response()->json(['error' => 'No hay jugadores en el sistema'], 404);
+         }
+         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
+ 
+         $sortedUsers = $usersWithSuccessPercentage->sortByDesc('success_percentage');
+         
+         $sortedUsers = $sortedUsers->values();
+         return response()->json($sortedUsers, 200);
+     }
+ 
 
     public function calculateSuccessPercentageAll($games)
     {
