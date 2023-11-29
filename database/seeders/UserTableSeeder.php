@@ -17,20 +17,14 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // $role = Role::findByName('admin');
         $role = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'web']
         );
-        // $role1 = Role::findByName('player');
+       
         $role1 = Role::firstOrCreate(
             ['name' => 'player', 'guard_name' => 'web']
         );
 
-        /*   User::create([
-            'name' => 'admin',
-            'email' => 'admin@mailto.com',
-            'password' => Hash::make('admin'),
-        ])->assignRole($role); */
         $user1 = User::firstOrCreate(
             [
                 'name' => 'admin',
@@ -42,7 +36,6 @@ class UserTableSeeder extends Seeder
         if (!$user1->hasRole('admin')) {
             $user1->assignRole($role);
         }
-        // $user1->assignRole($role);
 
         $user2 = User::firstOrCreate([
             'name' => 'Carla',
@@ -54,7 +47,7 @@ class UserTableSeeder extends Seeder
         if (!$user2->hasRole('player')) {
             $user2->assignRole($role1);
         }
-        // $user2->assignRole($role1);
+        
         $user3 = User::firstOrCreate([
             'name' => 'Jana',
             'email' => 'jana@mailto.com',
@@ -65,7 +58,7 @@ class UserTableSeeder extends Seeder
         if (!$user3->hasRole('player')) {
             $user3->assignRole($role1);
         }
-        //  $user3->assignRole($role1);
+        
         $user4 = User::create([
             'name' => 'player',
             'email' => 'player@mailto.com',
@@ -76,6 +69,6 @@ class UserTableSeeder extends Seeder
         if (!$user4->hasRole('player')) {
             $user4->assignRole($role1);
         }
-        //  $user4->assignRole($role1);
+        
     }
 }
