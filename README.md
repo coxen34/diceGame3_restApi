@@ -36,7 +36,7 @@ Este proyecto es una aplicación RESTful API basada en Laravel que implementa un
 - Regístrate como usuario para participar en el juego.
 - Se te asignará automáticamente el rol de jugador.
 - Las acciones permitidas varían según el rol:
-  - **Para el rol admin (nombre: admin, contraseña: admin, email: admin@mailto.com):**
+  - **Para el rol admin (nombre: admin, contraseña: admin, email: `admin@mailto.com`):**
     - Ver la lista de jugadores con sus tiradas y el porcentaje de éxito de cada uno.
     - Borrar las partidas de un usuario.
     - Ver el mejor y peor jugador.
