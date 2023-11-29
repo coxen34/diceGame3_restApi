@@ -19,7 +19,6 @@ Route::middleware('auth:api')->group(function () {
 
         Route::delete('/players/{id}/games', [GameController::class, 'delete'])->name('games.deletePlayerGames');
         Route::get('/players', [UserController::class, 'index'])->name('users.index');
-        Route::get('/players/ranking', [UserController::class, 'getPlayersRanking'])->name('players.ranking');
         Route::get('/players/ranking/loser', [UserController::class, 'getWorstPlayer'])->name('players.ranking/loser');
         Route::get('/players/ranking/winner', [UserController::class, 'getBestPlayer'])->name('players.ranking/winner');
     });
@@ -29,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update');
         Route::post('/players/{id}/games', [GameController::class, 'throwDice'])->name('games.throwDice');
         Route::get('/players/{id}/games', [GameController::class, 'getPlayerGames'])->name('games.getPlayerGames');
+        Route::get('/players/ranking', [UserController::class, 'getPlayersRanking'])->name('players.ranking');
     });
 });
 
