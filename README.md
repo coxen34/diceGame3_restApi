@@ -7,59 +7,50 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# diceGame3_restApi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Descripción
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Este proyecto es una aplicación RESTful API basada en Laravel que implementa un juego de dados. Los usuarios pueden registrarse para jugar, y se les asigna automáticamente el rol de jugador. La aplicación tiene funcionalidades específicas según el rol del usuario, con acciones permitidas para administrador y jugadores.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Requisitos
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- PHP >= 7.4
+- Composer >= 2.6.5
+- Laravel/Framework ^10.10
+- Laravel/Passport ^11.10
+- Spatie/Laravel-Permission ^6.1
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Instalación
+1. Clona el repositorio: `git clone https://github.com/tu-usuario/nombre-repositorio.git`
+2. Instala las dependencias: `composer install`
+3. Configura tu archivo `.env` con las credenciales de la base de datos.
+4. Ejecuta las migraciones: `php artisan migrate`
+5. Genera las claves de Passport: `php artisan passport:install`
+6. Ejecuta el servidor de desarrollo: `php artisan serve`
+### Uso
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Regístrate como usuario para participar en el juego.
+- Se te asignará automáticamente el rol de jugador.
+- Las acciones permitidas varían según el rol:
+  - **Para el rol admin (nombre: admin, contraseña: admin, email: admin@mailto.com):**
+    - Ver la lista de jugadores con sus tiradas y el porcentaje de éxito de cada uno.
+    - Borrar las partidas de un usuario.
+    - Ver el mejor y peor jugador.
 
-### Premium Partners
+## Funcionalidades
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Implementación de un juego de dados.
+- Registro de usuarios con asignación automática del rol de jugador.
+- Acciones específicas para administradores y jugadores.
+- Lista de jugadores con estadísticas de tiradas y porcentaje de éxito.
+- Borrado de partidas de usuarios.
+- Estadísticas de mejor y peor jugador.
+- Validación de contraseña: mínimo 9 dígitos, una letra mayúscula, un número y al menos un signo.
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
