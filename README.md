@@ -25,7 +25,7 @@ Este proyecto es una aplicación RESTful API basada en Laravel que implementa un
 
 
 ## Instalación
-1. Clona el repositorio: `git clone https://github.com/tu-usuario/nombre-repositorio.git`
+1. Clona el repositorio: `git clone https://github.com/coxen34/diceGame3_restApi.git`
 2. Instala las dependencias: `composer install`
 3. Configura tu archivo `.env` con las credenciales de la base de datos.
 4. Ejecuta las migraciones: `php artisan migrate`
