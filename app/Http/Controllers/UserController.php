@@ -76,10 +76,14 @@ class UserController extends Controller
 
     public function generateName(Request $request)
     {
-        return $request->name ? $request->name: 'anonymous ' . time();
+        $name = $request->name ?: 'anonymous';
+
+        $dateSuffix = ' ' . '(' . date('j M Y') . ')';
+    
+        return $name . $dateSuffix;
     }
 
-    public function createUser(Request $request,$name)
+    public function createUser(Request $request, $name)
     {
         // var_dump($request);
         $user = User::create([
@@ -274,21 +278,21 @@ class UserController extends Controller
      * ------------rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
      */
 
-     public function getPlayersRanking()
-     {
-         
-         $users = User::all();
-         if ($users->isEmpty()) {
-             return response()->json(['error' => 'No hay jugadores en el sistema'], 404);
-         }
-         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
- 
-         $sortedUsers = $usersWithSuccessPercentage->sortByDesc('success_percentage');
-         
-         $sortedUsers = $sortedUsers->values();
-         return response()->json($sortedUsers, 200);
-     }
- 
+    public function getPlayersRanking()
+    {
+
+        $users = User::all();
+        if ($users->isEmpty()) {
+            return response()->json(['error' => 'No hay jugadores en el sistema'], 404);
+        }
+        $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
+
+        $sortedUsers = $usersWithSuccessPercentage->sortByDesc('success_percentage');
+
+        $sortedUsers = $sortedUsers->values();
+        return response()->json($sortedUsers, 200);
+    }
+
 
     public function calculateSuccessPercentageAll($games)
     {
