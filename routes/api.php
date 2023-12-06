@@ -22,6 +22,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/players/ranking/winner', [UserController::class, 'getBestPlayer'])->name('players.ranking/winner');
     });
 
+    // Route::middleware('role:player|admin')->group(function () {
     Route::middleware('role:player')->group(function () {
 
         Route::put('/players/{id}', [UserController::class, 'update'])->name('users.update');
