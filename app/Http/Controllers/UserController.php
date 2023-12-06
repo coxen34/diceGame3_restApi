@@ -76,14 +76,14 @@ class UserController extends Controller
 
     public function generateName(Request $request)
     {
-        return $request->name ?: 'anonymous ' . time();
+        return $request->name ? $request->name: 'anonymous ' . time();
     }
 
-    public function createUser(Request $request)
+    public function createUser(Request $request,$name)
     {
         // var_dump($request);
         $user = User::create([
-            'name' => $request->name,
+            'name' => $name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
 
