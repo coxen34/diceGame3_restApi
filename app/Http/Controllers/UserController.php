@@ -296,13 +296,7 @@ class UserController extends Controller
     }
 
 
-    public function calculateSuccessPercentageAll($games)
-    {
-        $totalGames = $games->count();
-        $wonGames = $games->where('won', true)->count();
-
-        return $totalGames > 0 ? ($wonGames / $totalGames) * 100 : 0;
-    }
+   
 
     /**
      * ------------FIN rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
