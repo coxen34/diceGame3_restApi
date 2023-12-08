@@ -76,11 +76,16 @@ class UserController extends Controller
 
     public function generateName(Request $request)
     {
-        $name = $request->name ?: 'anonymous';
-
-        $dateSuffix = ' ' . '(' . date('j M Y') . ')';
-    
-        return $name . $dateSuffix;
+        $name = $request->name;
+        if ($name == NULL) {
+            $name = 'ANONYMOUS';
+        } else {
+            $user = User::where('name', $name)->first();
+            if ($user) {
+                throw ValidationException::withMessages(['name' => 'El nombre ya está en uso.']);
+            }
+        }
+        return $name;
     }
 
     public function createUser(Request $request, $name)
