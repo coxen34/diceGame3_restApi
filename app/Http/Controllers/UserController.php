@@ -187,7 +187,6 @@ class UserController extends Controller
         }
     }
     //UPDATE NAME
-
     public function update(Request $request, $id)
     {
         try {
@@ -208,11 +207,9 @@ class UserController extends Controller
                 return response()->json(['error' => 'Usuario no encontrado.'], 404);
             }
 
-            if ($request->has('name')) {
-                $user->name = $request->input('name');
-            } else {
-                $user->name = 'anonymous' . time();
-            }
+            $name = $this->generateName($request);
+            $user->name = $name;
+
             $user->save();
 
             return response()->json($user, 200);
