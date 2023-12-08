@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use App\Http\Functions\RegisterFunctions;
+use App\Http\Functions\LoginFunctions;
 
 
 
@@ -19,6 +19,15 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 
 class UserController extends Controller
 {
+    protected $registerFunctions;
+    protected $loginFunctions;
+
+    public function __construct(RegisterFunctions $registerFunctions,LoginFunctions $loginFunctions)
+    {
+        $this->registerFunctions = $registerFunctions;
+        $this->loginFunctions = $loginFunctions;
+    }
+    
 
     /**
      * ----------BLOQUE FUNCIONES REGISTRO--------------
@@ -26,14 +35,14 @@ class UserController extends Controller
     public function register(Request $request)
     {
         try {
-            $this->validateRegistrationData($request);
+            $this->registerFunctions->validateRegistrationData($request);
 
-            $name = $this->generateName($request);
+            $name = $this->registerFunctions->generateName($request);
 
-            $user = $this->createUser($request, $name);
+            $user = $this->registerFunctions->createUser($request, $name);
 
 
-            $this->assignRoleToUser($user);
+            $this->registerFunctions->assignRoleToUser($user);
 
             return response()->json($user, 201);
         } catch (ValidationException $e) {
@@ -44,7 +53,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Se ha producido un error al crear usuari@.'], 500);
         }
     }
-    public function validateRegistrationData(Request $request)
+    /* public function validateRegistrationData(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'nullable',
@@ -105,7 +114,7 @@ class UserController extends Controller
     {
         $role = Role::findByName('player');
         $user->assignRole($role);
-    }
+    } */
     /**
      * ---------------FIN BLOQUE REGISTRO--------------
      */
@@ -117,7 +126,7 @@ class UserController extends Controller
     {
         try {
 
-            $validateData = $this->validateDataLogin($request);
+            $validateData = $this->loginFunctions->validateDataLogin($request);
 
             $credentials = [
                 'email' => $validateData['email'],
@@ -148,7 +157,7 @@ class UserController extends Controller
         }
     }
 
-    public function validateDataLogin(Request $request)
+    /* public function validateDataLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -166,7 +175,7 @@ class UserController extends Controller
         ]);
 
         return $validator->validate();
-    }
+    } */
 
     /**
      * ---------------FIN  LOGIN--------------
@@ -207,7 +216,8 @@ class UserController extends Controller
                 return response()->json(['error' => 'Usuario no encontrado.'], 404);
             }
 
-            $name = $this->generateName($request);
+            // $name = $this->generateName($request);
+            $name = $this->registerFunctions->generateName($request);
             $user->name = $name;
 
             $user->save();
