@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
-
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Functions\RegisterFunctions;
+use App\Http\Functions\LoginFunctions;
+use App\Http\Functions\UpdateFunctions;
 
 
 
@@ -73,22 +76,6 @@ class UserTest extends TestCase
             ]);
         }
     }
-    public function test_index()
-    {
-        $user = User::factory()->create(['name' => 'Test User']);
-
-        $this->actingAs($user);
-
-        $user->assignRole('admin');
-
-        $response = $this->get('api/players/');
-
-        $token = $user->createToken('test-token')->accessToken;
-
-        $response = $this->withToken($token)->getJson('/api/players');
-
-        $response->assertStatus(200);
-    }
 
     public function test_update()
     {
@@ -110,6 +97,58 @@ class UserTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'UpdatedUser']);
+    }
+    
+    public function test_index()
+    {
+        $user = User::factory()->create(['name' => 'Test User']);
+
+        $this->actingAs($user);
+
+        $user->assignRole('admin');
+
+        $response = $this->get('api/players/');
+
+        $token = $user->createToken('test-token')->accessToken;
+
+        $response = $this->withToken($token)->getJson('/api/players');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_CalculateSuccessPercentage()
+    {
+        $registerFunctions = new RegisterFunctions();
+        $loginFunctions = new LoginFunctions();
+        $updateFunctions = new UpdateFunctions();
+
+        $instance = new UserController( $registerFunctions,$loginFunctions, $updateFunctions);
+    
+        
+        $users = collect([
+            (object) [
+                'id' => 1,
+                'name' => 'User 1',
+                'games' => collect([
+                    (object) ['won' => true],
+                    (object) ['won' => false],
+                ]),
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'User 2',
+                'games' => collect([
+                    (object) ['won' => true],
+                    (object) ['won' => true],
+                ]),
+            ],
+        ]);
+    
+        
+        $result = $instance->calculateSuccessPercentage($users);
+    
+        $this->assertEquals(50, $result[0]['success_percentage']);
+        $this->assertEquals(100, $result[1]['success_percentage']);
     }
 
 
