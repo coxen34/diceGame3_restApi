@@ -6,7 +6,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Game;
-use Tests\Feature\GameTest;
 
 class DatabaseSeeder extends Seeder
 {

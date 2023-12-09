@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use App\Http\Functions\RegisterFunctions;
 use App\Http\Functions\LoginFunctions;
+use App\Http\Functions\UpdateFunctions;
 
 
 
@@ -18,11 +18,13 @@ class UserController extends Controller
 {
     protected $registerFunctions;
     protected $loginFunctions;
+    protected $updateFunctions;
 
-    public function __construct(RegisterFunctions $registerFunctions,LoginFunctions $loginFunctions)
+    public function __construct(RegisterFunctions $registerFunctions,LoginFunctions $loginFunctions,UpdateFunctions $updateFunctions)
     {
         $this->registerFunctions = $registerFunctions;
         $this->loginFunctions = $loginFunctions;
+        $this->updateFunctions = $updateFunctions;
     }
     
 
@@ -116,7 +118,8 @@ class UserController extends Controller
                 return response()->json(['error' => 'No tienes permiso para actualizar este usuario.'], 403);
             }
 
-            $this->validateRequestUpdate($request, $id);
+            // $this->validateRequestUpdate($request, $id);
+            $this->updateFunctions->validateRequestUpdate($request,$id);
 
             $user = User::find($id);
 
@@ -138,25 +141,6 @@ class UserController extends Controller
             return response()->json(['error' => 'Ocurrió un error al actualizar el usuario.'], 500);
         }
     }
-
-    private function validateRequestUpdate($request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'nullable|unique:users,name,' . $id,
-        ]);
-
-        $validator->setAttributeNames([
-            'name' => 'nombre',
-        ]);
-
-        $validator->setCustomMessages([
-            'unique' => 'Este :attribute ya está en uso.',
-        ]);
-
-        $validator->validate();
-    }
-
-
     /**
      * ----------BLOQUE MOSTRAR JUGADOR CON % DE EXITOS--------------
      */

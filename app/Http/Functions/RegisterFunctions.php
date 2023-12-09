@@ -2,15 +2,14 @@
 
 namespace App\Http\Functions;
 
-use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
-use League\OAuth2\Server\Exception\OAuthServerException;
+
 
 class RegisterFunctions{
 
