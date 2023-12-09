@@ -2,47 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Functions\GameFunctions\ThrowDiceFunctions;
 use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Functions\GameFunctions\ThrowDiceFunctionsFunctions;
 
 class GameController extends Controller
 {
-    
-    public function throwDice($id)
+    protected $throwDiceFunctions;
+
+    public function __construct(ThrowDiceFunctions $throwDiceFunctions)
     {
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-        $targetUser = User::find($id);
-        if (!$targetUser) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-        if (auth()->user()->id != $id) {
-            return response()->json(['error' => 'No tienes permiso para tirar dados.'], 403);
-        }
-
-        $dice1 = rand(1, 6);
-        $dice2 = rand(1, 6);
-
-        $won = ($dice1 + $dice2) === 7;
-
-        $game = new Game();
-        $game->user_id = $id;
-        $game->dice1 = $dice1;
-        $game->dice2 = $dice2;
-        $game->won = $won;
-        $game->save();
-
-        return response()->json([
-            'message' => 'Has tirado los dados!',
-            'dice1' => $dice1,
-            'dice2' => $dice2,
-            'result' => $won ? "Has ganado!!" : "Has perdido, Inténtalo de nuevo!!",
-        ], 200);
+        $this->throwDiceFunctions = $throwDiceFunctions;
+        
     }
+
+    public function throwDice($id)
+{
+    $user = Auth::user();
+
+    $validationResult = $this->throwDiceFunctions->validateThrowDice($user, $id);
+
+    if ($validationResult['error']) {
+        return response()->json($validationResult, $validationResult['statusCode']);
+    }
+
+    $gameResult = $this->throwDiceFunctions->playGame($id);
+
+    return response()->json($gameResult, 200);
+}
+
     public function delete($id)
 {
     
