@@ -153,7 +153,7 @@ class UserController extends Controller
         return response()->json([$usersWithSuccessPercentage], 200);
     }
 
-    protected function calculateSuccessPercentage($users)
+    public function calculateSuccessPercentage($users)
     {
         $result = $users->map(function ($user) {
             $totalGames = $user->games->count();
