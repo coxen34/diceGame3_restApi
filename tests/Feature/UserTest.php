@@ -84,7 +84,7 @@ class UserTest extends TestCase
         $token = $user->createToken('TestToken')->accessToken;
 
         $user->assignRole('player');
-        
+
         $data = [
             'name' => 'UpdatedUser',
         ];
@@ -98,7 +98,7 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'UpdatedUser']);
     }
-    
+
     public function test_index()
     {
         $user = User::factory()->create(['name' => 'Test User']);
@@ -122,9 +122,9 @@ class UserTest extends TestCase
         $loginFunctions = new LoginFunctions();
         $updateFunctions = new UpdateFunctions();
 
-        $instance = new UserController( $registerFunctions,$loginFunctions, $updateFunctions);
-    
-        
+        $instance = new UserController($registerFunctions, $loginFunctions, $updateFunctions);
+
+
         $users = collect([
             (object) [
                 'id' => 1,
@@ -143,10 +143,10 @@ class UserTest extends TestCase
                 ]),
             ],
         ]);
-    
-        
+
+
         $result = $instance->calculateSuccessPercentage($users);
-    
+
         $this->assertEquals(50, $result[0]['success_percentage']);
         $this->assertEquals(100, $result[1]['success_percentage']);
     }

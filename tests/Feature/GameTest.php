@@ -12,7 +12,7 @@ use App\Models\Game;
 
 class GameTest extends TestCase
 {
-    // use RefreshDatabase;
+    
     use DatabaseTransactions;
 
     //------------------FUNCIONES HELPER------------
@@ -52,9 +52,7 @@ class GameTest extends TestCase
         $user = $this->getUser('player');
         $this->actingAs($user);
 
-        $targetUser = $this->getUser('Carla');
-
-        $response = $this->post('/api/players/' . $targetUser->id . '/games');
+        $response = $this->post('/api/players/' . $user->id . '/games');
 
         $this->assertResponseThrowDice($response);
     }
@@ -63,34 +61,30 @@ class GameTest extends TestCase
     public function test_delete()
     {
         $user = User::factory()->create();
-
         $user->assignRole('admin');
+        
 
         Game::factory()->count(3)->create(['user_id' => $user->id]);
+
+        
 
         $response = $this->actingAs($user, 'api')->delete("/api/players/{$user->id}/games");
 
         $this->assertResponseDelete($response);
     }
-
-
+    
 
     public function test_getPlayerGames()
     {
 
         $user = User::where('id', 1)->first();
-        
         $user->assignRole('player');
-
         $game = Game::where('user_id', $user->id)->first();
-
 
         $this->actingAs($user, 'api');
 
-
         $response = $this->get('/api/players/' . $user->id . '/games');
 
-        // Verifica la respuesta
         $response->assertStatus(200)
             ->assertJson([
                 'player_id' => $user->id,

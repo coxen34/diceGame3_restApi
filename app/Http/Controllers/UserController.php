@@ -153,30 +153,6 @@ class UserController extends Controller
         return response()->json([$usersWithSuccessPercentage], 200);
     }
 
-    public function calculateSuccessPercentage($users)
-    {
-        $result = $users->map(function ($user) {
-            $totalGames = $user->games->count();
-            $wonGames = $user->games->where('won', true)->count();
-
-            return [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                ],
-                'success_percentage' => $totalGames > 0 ? ($wonGames / $totalGames) * 100 : 0,
-            ];
-        });
-
-        return $result;
-    }
-
-
-    /**
-     * ---------------FIN BLOQUE JUGADOR CON % DE EXITOS--------------
-     */
-
-
     /**
      * ------------rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
      */
@@ -189,19 +165,12 @@ class UserController extends Controller
             return response()->json(['error' => 'No hay jugadores en el sistema'], 404);
         }
         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
-
         $sortedUsers = $usersWithSuccessPercentage->sortByDesc('success_percentage');
-
         $sortedUsers = $sortedUsers->values();
+
         return response()->json($sortedUsers, 200);
     }
 
-
-   
-
-    /**
-     * ------------FIN rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
-     */
 
     public function getWorstPlayer()
     {
@@ -212,11 +181,7 @@ class UserController extends Controller
         }
 
         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
-
-
         $sortedUsers = $usersWithSuccessPercentage->sortBy('success_percentage');
-
-
         $worstPlayer = $sortedUsers->first();
 
         return response()->json($worstPlayer, 200);
@@ -231,13 +196,30 @@ class UserController extends Controller
         }
 
         $usersWithSuccessPercentage = $this->calculateSuccessPercentage($users);
-
-
         $sortedUsers = $usersWithSuccessPercentage->sortByDesc('success_percentage');
-
-
         $bestPlayer = $sortedUsers->first();
 
         return response()->json($bestPlayer, 200);
+    }
+
+    // ↓FUNCION COMPARTIDA POR ESTOS MÉTODOS:index, getPlayersRanking, getWorstPlayer, getBestPlayer↓
+
+    public function calculateSuccessPercentage($users)
+    {
+        $result = $users->map(function ($user) {
+            $totalGames = $user->games->count();
+            $wonGames = $user->games->where('won', true)->count();
+
+            return [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                ],
+                // Si el total de juegos es cero, el porcentaje de éxito se establece en cero para evitar divisiones por cero.↓↓
+                'success_percentage' => $totalGames > 0 ? ($wonGames / $totalGames) * 100 : 0,
+            ];
+        });
+
+        return $result;
     }
 }

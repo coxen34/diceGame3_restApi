@@ -20,7 +20,6 @@ class GameController extends Controller
     public function throwDice($id)
 {
     $user = Auth::user();
-
     $validationResult = $this->throwDiceFunctions->validateThrowDice($user, $id);
 
     if ($validationResult['error']) {
