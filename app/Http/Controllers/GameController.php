@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Functions\GameFunctions\ThrowDiceFunctions;
-use Illuminate\Http\Request;
-use App\Models\Game;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Functions\GameFunctions\ThrowDiceFunctionsFunctions;
+
 
 class GameController extends Controller
 {
